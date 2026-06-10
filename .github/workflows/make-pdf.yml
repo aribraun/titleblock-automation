@@ -1,0 +1,33 @@
+name: Create Titleblocked PDFs
+
+on:
+  push:
+    paths:
+      - "titleblock.pdf"
+      - "plans/*.pdf"
+      - "scripts/place_plan.py"
+      - ".github/workflows/make-pdf.yml"
+
+  workflow_dispatch:
+
+jobs:
+  make-pdfs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install pymupdf
+
+      - run: mkdir -p output
+
+      - run: python scripts/place_plan.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: titleblocked-pdfs
+          path: output/*.pdf
